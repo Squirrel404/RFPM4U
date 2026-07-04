@@ -9,19 +9,20 @@ public class PlayerController : MonoBehaviour
     [MinValue(0)] [SerializeField] float accelerationTime = 0.1f;
     float accelerationVelocity;
     [HideInInspector] public float currentMoveSpeed;
-    bool sprinting;
+    [HideInInspector] public bool sprinting;
 
     [Header("Walk Cycle")]
     [SerializeField] bool walkCycleDips = true;
-    [MinValue(0)][SerializeField] float walkStepInterval = 0.6f;
+    [MinValue(0)] [SerializeField] float walkStepInterval = 0.6f;
     public float StepInterval { get { return walkStepInterval * (walkSpeed / MoveSpeed); } }
-    [MinValue(0)][SerializeField] float stepDipAmount = 0.3f;
+    [MinValue(0)] [SerializeField] float stepDipAmount = 0.3f;
     float stepPhaseTime;
     float legMult = 1;
     float randomStepIntervalMult = 1;
     float previousPhase;
     float walkCycleMult;
     [HideInInspector] public float walkPhase;
+    [HideInInspector] public bool tookStepThisFrame;
 
     [Dropdown("legs")]
     [SerializeField] string dominantLeg = "Right";
@@ -35,13 +36,13 @@ public class PlayerController : MonoBehaviour
     string[] legs = new string[] { "Left", "Right" };
 
     [Tooltip("Determines how much control the player has over move direction between steps.")]
-    [Range(0f, 2f)][SerializeField] float stepControl = 0.75f;
+    [Range(0f, 2f)] [SerializeField] float stepControl = 0.75f;
     Vector3 stepDir;
 
     [Header("References")]
     [Foldout("References")] public Rigidbody rb;
     [Tooltip("Should be main camera.")]
-    [Foldout("References")][SerializeField] Transform orientation;
+    Transform orientation;
 
     [Header("Input")]
     Vector2 moveInput;
@@ -68,6 +69,8 @@ public class PlayerController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        orientation = Camera.main.transform;
     }
 
     void OnEnable()
@@ -92,6 +95,8 @@ public class PlayerController : MonoBehaviour
 
     void WalkCycleUpdate()
     {
+        tookStepThisFrame = false;
+
         if (!Moving || !walkCycleDips)
         {
             walkCycleMult = 1;
@@ -158,6 +163,8 @@ public class PlayerController : MonoBehaviour
         randomStepIntervalMult = Random.Range(0.95f, 1.05f);
 
         stepDir = MoveDir;
+
+        tookStepThisFrame = true;
 
         // Play footstep sound
     }

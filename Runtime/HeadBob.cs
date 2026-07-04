@@ -1,11 +1,12 @@
 using NaughtyAttributes;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class HeadBob : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] PlayerController controller;
-    [SerializeField] Transform camHolder;
+    [SerializeField] CinemachineRotationOffset cameraRotationOffset;
 
     [Header("Position")]
     [SerializeField] Vector3 offset;
@@ -19,6 +20,7 @@ public class HeadBob : MonoBehaviour
 
     [Header("Rotation")]
     [SerializeField] float rotationAmount = 8;
+    [SerializeField] float zRotationMult = 0.5f;
     [SerializeField] float rotationSmooth = 99;
 
     [Header("Return")]
@@ -27,7 +29,7 @@ public class HeadBob : MonoBehaviour
     float returnT;
     Vector3 returnStartPos;
 
-    Quaternion targetRot;
+    Vector3 targetRot;
 
     void Awake()
     {
@@ -41,7 +43,7 @@ public class HeadBob : MonoBehaviour
             returnT += Time.deltaTime * returnSpeed;
 
             transform.localPosition = Vector3.Lerp(returnStartPos, Offset, returnT);
-            camHolder.localRotation = Quaternion.Slerp(targetRot, Quaternion.identity, returnT);
+            cameraRotationOffset.Offset = Vector3.Slerp(targetRot, Vector3.zero, returnT);
 
             return;
         }
@@ -65,18 +67,19 @@ public class HeadBob : MonoBehaviour
 
         float yRot = -x * rotationAmount;
         float xRot = y * rotationAmount;
-        float zRot = -x * rotationAmount * 0.5f;
+        float zRot = -x * rotationAmount * 0.5f * zRotationMult;
 
-        targetRot = Quaternion.Euler(xRot, yRot, zRot);
+        Vector3 orientation = Camera.main.transform.forward;
+        targetRot = new Vector3(xRot * orientation.x, yRot * orientation.y, zRot * orientation.z);
 
-        camHolder.localRotation = Quaternion.Slerp(camHolder.localRotation, targetRot, Time.deltaTime * rotationSmooth);
+        cameraRotationOffset.Offset = Vector3.Slerp(cameraRotationOffset.Offset, targetRot, Time.deltaTime * rotationSmooth);
     }
 
 #if UNITY_EDITOR
     void Reset()
     {
         controller = transform.parent.GetComponent<PlayerController>();
-        camHolder = GameObject.Find("Camera Holder").transform;
+        cameraRotationOffset = GameObject.Find("First Person Camera").GetComponent<CinemachineRotationOffset>();
         startLocalPositionOffset = transform.localPosition;
         SetCurvesToDefault();
     }

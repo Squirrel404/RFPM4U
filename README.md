@@ -40,3 +40,5 @@ https://github.com/user-attachments/assets/64de9c02-4761-4225-a7ae-9c4cb1d1583c
 5. Insert the Viewpoint game object as tracking target on the Cinemachine Camera and press "Add Brain"
 
 To change the controls, open the MovementInput input actions.
+
+To apply rotation offset to the camera, add another CinemachineRotationOffset component to the Cinemachine Camera game object. Make sure you have the reference to the right component!
