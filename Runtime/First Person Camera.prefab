@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7677097438467524984}
   - component: {fileID: 1668028236588371402}
   - component: {fileID: 5450601370663067092}
-  - component: {fileID: 7859843180191979878}
+  - component: {fileID: 4880166929440429679}
   - component: {fileID: 5266606174097669916}
   m_Layer: 0
   m_Name: First Person Camera
@@ -126,7 +126,7 @@ MonoBehaviour:
       Wait: 1
       Time: 2
     Restrictions: 0
---- !u!114 &7859843180191979878
+--- !u!114 &4880166929440429679
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -135,7 +135,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 737897184571104557}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dd68a8fbcd529e4182dc1b9c469591c, type: 3}
+  m_Script: {fileID: 11500000, guid: 16369833dea9103428f504193d53ea83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Unity.Cinemachine.CinemachineRotationOffset
   Offset: {x: 0, y: 0, z: 0}

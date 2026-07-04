@@ -25,20 +25,10 @@ namespace Unity.Cinemachine
         [FormerlySerializedAs("m_ApplyAfter")]
         public CinemachineCore.Stage ApplyAfter = CinemachineCore.Stage.Aim;
 
-        /// <summary>
-        /// If applying offset after aim, re-adjust the aim to preserve the screen position
-        /// of the LookAt target as much as possible
-        /// </summary>
-        [Tooltip("If applying offset after aim, re-adjust the aim to preserve the screen position"
-            + " of the LookAt target as much as possible")]
-        [FormerlySerializedAs("m_PreserveComposition")]
-        public bool PreserveComposition;
-
         private void Reset()
         {
             Offset = Vector3.zero;
             ApplyAfter = CinemachineCore.Stage.Aim;
-            PreserveComposition = false;
         }
 
         /// <summary>
@@ -54,27 +44,8 @@ namespace Unity.Cinemachine
         {
             if (stage == ApplyAfter)
             {
-                bool preserveAim = PreserveComposition
-                    && state.HasLookAt() && stage > CinemachineCore.Stage.Body;
-
-                Vector3 screenOffset = Vector2.zero;
-                if (preserveAim)
-                {
-                    screenOffset = state.RawOrientation.GetCameraRotationToTarget(
-                        state.ReferenceLookAt - state.GetCorrectedPosition(), state.ReferenceUp);
-                }
-
-                Vector3 offset = state.RawOrientation * Offset;
-                state.OrientationCorrection *= Quaternion.Euler(offset);
-                if (!preserveAim)
-                    state.ReferenceLookAt += offset;
-                else
-                {
-                    var q = Quaternion.LookRotation(
-                        state.ReferenceLookAt - state.GetCorrectedPosition(), state.ReferenceUp);
-                    q = q.ApplyCameraRotation(-screenOffset, state.ReferenceUp);
-                    state.RawOrientation = q;
-                }
+                Quaternion offset = Quaternion.Euler(Offset);
+                state.OrientationCorrection *= offset;
             }
         }
     }

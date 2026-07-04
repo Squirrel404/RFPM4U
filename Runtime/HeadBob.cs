@@ -69,8 +69,7 @@ public class HeadBob : MonoBehaviour
         float xRot = y * rotationAmount;
         float zRot = -x * rotationAmount * 0.5f * zRotationMult;
 
-        Vector3 orientation = Camera.main.transform.forward;
-        targetRot = new Vector3(xRot * orientation.x, yRot * orientation.y, zRot * orientation.z);
+        targetRot = new Vector3(xRot, yRot, zRot);
 
         cameraRotationOffset.Offset = Vector3.Slerp(cameraRotationOffset.Offset, targetRot, Time.deltaTime * rotationSmooth);
     }
