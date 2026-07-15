@@ -10,17 +10,17 @@ public class HeadBob : MonoBehaviour
 
     [Header("Position")]
     [Tooltip("May result in the camera glitching through walls. Increasing collider radius fixes that.")]
-    [MinValue(0)] [SerializeField] float forwardOffset = 0.2f;
+    [MinValue(0)] [SerializeField] float forwardOffset = 0.25f;
     Vector3 startLocalPositionOffset;
     Vector3 Offset { get { return startLocalPositionOffset + Camera.main.transform.forward * forwardOffset; } }
-    [SerializeField] float amplitude = 0.015f;
+    [SerializeField] float amplitude = 0.02f;
     [SerializeField] Vector2 amplitudeHV = new Vector2(1, 1);
 
     [SerializeField] AnimationCurve horizontal;
     [SerializeField] AnimationCurve vertical;
 
     [Header("Rotation")]
-    [SerializeField] float rotationAmount = 8;
+    [SerializeField] float rotationAmount = 5;
     [SerializeField] float zRotationMult = 0.5f;
     [SerializeField] float rotationSmooth = 99;
 
