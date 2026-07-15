@@ -16,6 +16,8 @@ Immersive First Person Movement for Unity (IFPM4U) consists of two scripts for r
   * The walk cycle speed will increase if the player is trying to make a sharp turn, meaning the current foot will hit the ground quicker to be able to change direction.
   * The walk cycle dip will also feel stronger to give the impression of stopping momentum.
   * Feels like you're actually using your legs to rotate your body.
+* **Slight forward offset**
+  * Your eyes are not at the center of your body, so the camera should be offset forward.
 * **Dominant leg**
   * One leg feels very slightly stronger than the other.
   * Could potentially also be used for limping.
