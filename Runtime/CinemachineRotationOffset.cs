@@ -11,10 +11,13 @@ namespace Unity.Cinemachine
     [SaveDuringPlay]
     public class CinemachineRotationOffset : CinemachineExtension
     {
+        [Tooltip("A variable you can use to differentiate multiple rotation offsets")]
+        public new string tag = "Head bob";
+
         /// <summary>
-        /// Offset the camera's position by this much (camera space)
+        /// Offset the camera's rotation by this much (camera space)
         /// </summary>
-        [Tooltip("Offset the camera's position by this much (camera space)")]
+        [Tooltip("Offset the camera's rotation by this much (camera space)")]
         [FormerlySerializedAs("m_Offset")]
         public Vector3 Offset = Vector3.zero;
 

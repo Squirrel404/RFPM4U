@@ -9,9 +9,10 @@ public class HeadBob : MonoBehaviour
     [SerializeField] CinemachineRotationOffset cameraRotationOffset;
 
     [Header("Position")]
-    [SerializeField] Vector3 offset;
-    [ShowNonSerializedField] Vector3 startLocalPositionOffset;
-    Vector3 Offset { get { return offset + startLocalPositionOffset; } }
+    [Tooltip("May result in the camera glitching through walls. Increasing collider radius fixes that.")]
+    [MinValue(0)] [SerializeField] float forwardOffset = 0.2f;
+    Vector3 startLocalPositionOffset;
+    Vector3 Offset { get { return startLocalPositionOffset + Camera.main.transform.forward * forwardOffset; } }
     [SerializeField] float amplitude = 0.015f;
     [SerializeField] Vector2 amplitudeHV = new Vector2(1, 1);
 
