@@ -42,6 +42,8 @@ https://github.com/user-attachments/assets/64de9c02-4761-4225-a7ae-9c4cb1d1583c
 
 <img src="Images/scene_setup.png">
 
+ Note: if the prefab has a missing script, replace that with the CinemachineCameraOffset script.
+
 5. Insert the Viewpoint game object as tracking target on the Cinemachine Camera and press "Add Brain"
 
 To change the controls, open the MovementInput input actions.
