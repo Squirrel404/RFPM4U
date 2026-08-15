@@ -39,7 +39,9 @@ public class PlayerController : MonoBehaviour
     string[] legs = new string[] { "Left", "Right" };
 
     [Tooltip("Determines how much control the player has over move direction between steps.")]
-    [Range(0f, 2f)] [SerializeField] float stepControl = 0.75f;
+    [Range(0f, 2f)] [SerializeField] float stepControlWalk = 1;
+    [Range(0f, 2f)] [SerializeField] float stepControlSprint = 0.5f;
+    float CurrentStepControl => Mathf.Lerp(stepControlWalk, stepControlSprint, (currentMoveSpeed - walkSpeed) / (sprintSpeed - walkSpeed));
     Vector3 stepDir;
 
     [Header("References")]
@@ -151,9 +153,10 @@ public class PlayerController : MonoBehaviour
 
         Vector3 moveDir = MoveDir;
         float dot = (Vector3.Dot(moveDir, stepDir) + 1) / 2;
-        moveDir = Vector3.Lerp(stepDir, moveDir, Mathf.Abs(dot) * stepControl);
+        moveDir = Vector3.Lerp(stepDir, moveDir, Mathf.Abs(dot) * CurrentStepControl);
 
-        rb.linearVelocity = moveDir * currentMoveSpeed * walkCycleMult; // ISSUE: velocity can be (NaN, NaN, NaN) when mashing movement buttons. Very rare and can be ignored.
+        // ISSUE: velocity can be (NaN, NaN, NaN) when mashing movement buttons. Very rare and can be ignored.
+        rb.linearVelocity = moveDir * (currentMoveSpeed * dot) * walkCycleMult;
     }
 
     void Sprint(bool toggle = true)
