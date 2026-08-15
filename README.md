@@ -15,6 +15,8 @@ Immersive First Person Movement for Unity (IFPM4U) consists of two scripts (and 
   * The player has less control over move direction the higher the turn angle is between each step.
   * The walk cycle speed will increase if the player is trying to make a sharp turn, meaning the current foot will hit the ground quicker to be able to change direction.
   * The walk cycle dip will also feel stronger to give the impression of stopping momentum.
+  * Lower step control when sprinting.
+  * Slower move speed depending on how much you're turning, since you're not really moving forward when twisting your leg.
   * Feels like you're actually using your legs to rotate your body.
 * **Slight forward camera offset**
   * Your eyes are not at the center of your body, so the camera should be offset forward.
@@ -25,9 +27,9 @@ Immersive First Person Movement for Unity (IFPM4U) consists of two scripts (and 
   * Some aspects such as the walk cycle interval are slightly randomized for a more natural feel.
 * **Acceleration**
   * So you don't immediately start moving at full speed.
-  * Configureable curve and speed
+  * Configureable curve and speed.
 * **CinemachineRotationOffset component**
-  * No idea why Cinemachine doesn't have this
+  * No idea why Cinemachine doesn't have this.
 
 https://github.com/user-attachments/assets/6ade41ad-9772-43fd-ab67-80dfb9c8ca30
 
