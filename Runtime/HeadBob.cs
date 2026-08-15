@@ -13,7 +13,7 @@ public class HeadBob : MonoBehaviour
     [MinValue(0)] [SerializeField] float forwardOffset = 0.25f;
     Vector3 startLocalPositionOffset;
     Vector3 Offset { get { return startLocalPositionOffset + Camera.main.transform.forward * forwardOffset; } }
-    [SerializeField] float amplitude = 0.02f;
+    [SerializeField] float amplitude = 0.04f;
     [SerializeField] Vector2 amplitudeHV = new Vector2(1, 1);
 
     [SerializeField] AnimationCurve horizontal;

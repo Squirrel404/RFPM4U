@@ -1,5 +1,6 @@
 using NaughtyAttributes;
 using UnityEngine;
+using Unity.Cinemachine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -72,8 +73,6 @@ public class PlayerController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        orientation = Camera.main.transform;
     }
 
     void OnEnable()
