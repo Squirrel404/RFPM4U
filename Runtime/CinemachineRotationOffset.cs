@@ -11,6 +11,9 @@ namespace Unity.Cinemachine
     [SaveDuringPlay]
     public class CinemachineRotationOffset : CinemachineExtension
     {
+        /// <summary>
+        /// A variable you can use to differentiate multiple rotation offsets
+        /// </summary>
         [Tooltip("A variable you can use to differentiate multiple rotation offsets")]
         public new string tag = "Head bob";
 
@@ -27,6 +30,12 @@ namespace Unity.Cinemachine
         [Tooltip("When to apply the offset")]
         [FormerlySerializedAs("m_ApplyAfter")]
         public CinemachineCore.Stage ApplyAfter = CinemachineCore.Stage.Aim;
+
+        /// <summary>
+        /// The camera's rotation before the offset was applied
+        /// </summary>
+        [Tooltip("The camera's rotation before the offset was applied")]
+        public Quaternion rotationBeforeOffset;
 
         private void Reset()
         {
@@ -47,6 +56,7 @@ namespace Unity.Cinemachine
         {
             if (stage == ApplyAfter)
             {
+                rotationBeforeOffset = transform.rotation;
                 Quaternion offset = Quaternion.Euler(Offset);
                 state.OrientationCorrection *= offset;
             }

@@ -3,18 +3,20 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float walkSpeed = 2.18f;
-    [SerializeField] float sprintSpeed = 3.3f;
-    float MoveSpeed { get { return sprinting ? sprintSpeed : walkSpeed; } }
+    public float walkSpeed = 3.27f;
+    [SerializeField] float sprintSpeed = 4.95f;
+    float MoveSpeed => sprinting ? sprintSpeed : walkSpeed;
     [MinValue(0)] [SerializeField] float accelerationTime = 0.1f;
-    float accelerationVelocity;
+    [SerializeField] AnimationCurve accelerationCurve = new AnimationCurve(new Keyframe[] { new Keyframe(0, 0, 2, 2), new Keyframe(1, 1) });
+    float accelerationT;
     [HideInInspector] public float currentMoveSpeed;
+    float startMoveSpeed;
     [HideInInspector] public bool sprinting;
 
     [Header("Walk Cycle")]
     [SerializeField] bool walkCycleDips = true;
     [MinValue(0)] [SerializeField] float walkStepInterval = 0.6f;
-    public float StepInterval { get { return walkStepInterval * (walkSpeed / MoveSpeed); } }
+    public float StepInterval => walkStepInterval * (walkSpeed / MoveSpeed);
     [MinValue(0)] [SerializeField] float stepDipAmount = 0.3f;
     float stepPhaseTime;
     float legMult = 1;
@@ -32,7 +34,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The higher, the more random the leg dominance is each step.")]
     [SerializeField] float legVariability = 0.02f;
     [HideInInspector] public bool leftStep;
-    bool DominantStep { get { return (leftStep && dominantLeg == "Left") || (!leftStep && dominantLeg == "Right"); } }
+    bool DominantStep => (leftStep && dominantLeg == "Left") || (!leftStep && dominantLeg == "Right");
     string[] legs = new string[] { "Left", "Right" };
 
     [Tooltip("Determines how much control the player has over move direction between steps.")]
@@ -41,18 +43,19 @@ public class PlayerController : MonoBehaviour
 
     [Header("References")]
     [Foldout("References")] public Rigidbody rb;
-    [Tooltip("Should be main camera.")]
-    Transform orientation;
+    [Tooltip("Should be the rotation offset responsible for headbob. " +
+        "This component is used to ensure the offset isn't applied to the move direction using the rotationBeforeOffset variable.")]
+    [Foldout("References")] [SerializeField] CinemachineRotationOffset orientation;
 
     [Header("Input")]
     Vector2 moveInput;
-    MovementInput controls;
-    public bool Moving { get { return moveInput != Vector2.zero; } }
+    public MovementInput controls;
+    public bool Moving => moveInput != Vector2.zero;
     Vector3 MoveDir
     {
         get
         {
-            Vector3 moveDir = orientation.right * moveInput.x + orientation.forward * moveInput.y;
+            Vector3 moveDir = (orientation.rotationBeforeOffset * Vector3.right) * moveInput.x + (orientation.rotationBeforeOffset * Vector3.forward) * moveInput.y;
             moveDir.y = 0;
             return moveDir.normalized;
         }
@@ -85,12 +88,23 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Moving)
-            currentMoveSpeed = Mathf.SmoothDamp(currentMoveSpeed, MoveSpeed, ref accelerationVelocity, accelerationTime);
-        else
-            currentMoveSpeed = 0;
-
+        AccelerationUpdate();
         WalkCycleUpdate();
+    }
+
+    void AccelerationUpdate()
+    {
+        if (Moving)
+        {
+            accelerationT += Time.deltaTime / accelerationTime;
+            currentMoveSpeed = Mathf.Lerp(startMoveSpeed, MoveSpeed, accelerationCurve.Evaluate(Mathf.Clamp01(accelerationT)));
+        }
+        else
+        {
+            currentMoveSpeed = 0;
+            startMoveSpeed = 0;
+            accelerationT = 0;
+        }
     }
 
     void WalkCycleUpdate()
@@ -140,7 +154,7 @@ public class PlayerController : MonoBehaviour
         float dot = (Vector3.Dot(moveDir, stepDir) + 1) / 2;
         moveDir = Vector3.Lerp(stepDir, moveDir, Mathf.Abs(dot) * stepControl);
 
-        rb.linearVelocity = moveDir * MoveSpeed * walkCycleMult; // ISSUE: velocity can be (NaN, NaN, NaN) when mashing movement buttons. Very rare and can be ignored.
+        rb.linearVelocity = moveDir * currentMoveSpeed * walkCycleMult; // ISSUE: velocity can be (NaN, NaN, NaN) when mashing movement buttons. Very rare and can be ignored.
     }
 
     void Sprint(bool toggle = true)
@@ -148,6 +162,9 @@ public class PlayerController : MonoBehaviour
         sprinting = toggle;
         stepPhaseTime = walkPhase * StepInterval;
         previousPhase = 0;
+
+        accelerationT = 0;
+        startMoveSpeed = currentMoveSpeed;
     }
 
     void Step()
@@ -186,14 +203,14 @@ public class PlayerController : MonoBehaviour
     {
         moveInput = Vector2.zero;
 
-        // Play dampened, low pitch footstep sound
+        // Play dampened, low pitch footstep sound. Increase volume based on currentMoveSpeed.
     }
 
 #if UNITY_EDITOR
     void Reset()
     {
         rb = GetComponent<Rigidbody>();
-        orientation = Camera.main.transform;
+        orientation = FindAnyObjectByType<CinemachineRotationOffset>();
     }
 #endif
 }
